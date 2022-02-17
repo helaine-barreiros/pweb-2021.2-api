@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-GerasenhasApiApplication<gerasenhas-api>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "br.upe.computacao.pweb.gerasenhas.gerasenhasapi.GerasenhasApiApplication",
+            "projectName": "gerasenhas-api",
+            "args": ""
+        }
+    ]
+}
