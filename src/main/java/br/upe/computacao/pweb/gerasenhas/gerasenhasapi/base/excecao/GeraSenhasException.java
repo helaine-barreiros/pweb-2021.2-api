@@ -1,4 +1,4 @@
-package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.base;
+package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.base.excecao;
 
 public class GeraSenhasException extends RuntimeException {
 

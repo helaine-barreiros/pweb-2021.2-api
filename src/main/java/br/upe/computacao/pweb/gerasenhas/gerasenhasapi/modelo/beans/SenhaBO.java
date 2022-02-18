@@ -1,4 +1,4 @@
-package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo;
+package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans;
 
 import java.time.LocalDateTime;
 import lombok.Builder;

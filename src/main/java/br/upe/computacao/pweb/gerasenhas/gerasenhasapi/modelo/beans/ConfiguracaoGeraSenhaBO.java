@@ -1,5 +1,8 @@
-package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo;
+package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans;
 
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,10 +10,20 @@ import lombok.Data;
 @Data
 public class ConfiguracaoGeraSenhaBO {
 
+    @Range(min = 8, max = 40, message = "O tamanho da senha deve ser entre 8 e 40 caracteres")
+    @NotNull(message = "O tamanho da senha deve ser informado")
     private Integer tamanho;
+
+    @NotNull(message = "Informe se a senha deve conter caracteres maiúsculos")
     private Boolean maiuscula;
+
+    @NotNull(message = "Informe se a senha deve conter caracteres minúsculos")
     private Boolean minuscula;
+
+    @NotNull(message = "Informe se a senha deve conter caracteres numéricos")
     private Boolean numeros;
+
+    @NotNull(message = "Informe se a senha deve conter caracteres especiais")
     private Boolean especiais;
 
     public int obterQuantidadeConfiguracoes() {

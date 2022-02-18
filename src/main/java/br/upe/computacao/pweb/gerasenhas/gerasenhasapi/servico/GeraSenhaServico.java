@@ -8,9 +8,9 @@ import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.stereotype.Service;
-import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.base.GeraSenhasException;
-import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.ConfiguracaoGeraSenhaBO;
-import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.SenhaBO;
+import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.base.excecao.GeraSenhasException;
+import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans.ConfiguracaoGeraSenhaBO;
+import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans.SenhaBO;
 
 @Service
 public class GeraSenhaServico {
