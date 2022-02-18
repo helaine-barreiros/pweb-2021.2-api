@@ -3,7 +3,6 @@ package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.servico;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
@@ -11,9 +10,10 @@ import org.springframework.stereotype.Service;
 import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.base.excecao.GeraSenhasException;
 import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans.ConfiguracaoGeraSenhaBO;
 import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans.SenhaBO;
+import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.enumeracao.CaracterEspecialDataEnum;
 
 @Service
-public class GeraSenhaServico {
+public class GeraSenhaServico implements IGeraSenhaServico {
 
     public SenhaBO gerarSenha(ConfiguracaoGeraSenhaBO configuracao) {
         PasswordGenerator gen = new PasswordGenerator();
@@ -54,33 +54,12 @@ public class GeraSenhaServico {
         }
 
         if (configuracao.getEspeciais()) {
-            regras.add(new CharacterRule(CaracterEspecialData.Special_Unicode,
+            regras.add(new CharacterRule(CaracterEspecialDataEnum.Special_Unicode,
                     (sobra + configuracao.qtdCaracteresPorToken())));
         }
 
         return SenhaBO.builder().senha(gen.generatePassword(configuracao.getTamanho(), regras))
                 .geracao(LocalDateTime.now()).configuracao(configuracao).build();
-    }
-
-    enum CaracterEspecialData implements CharacterData {
-        Special_Unicode("INSUFFICIENT_SPECIAL", "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~");
-
-        private final String errorCode;
-        private final String characters;
-
-
-        CaracterEspecialData(final String code, final String charString) {
-            errorCode = code;
-            characters = charString;
-        }
-
-        public String getErrorCode() {
-            return errorCode;
-        }
-
-        public String getCharacters() {
-            return characters;
-        }
     }
 }
 

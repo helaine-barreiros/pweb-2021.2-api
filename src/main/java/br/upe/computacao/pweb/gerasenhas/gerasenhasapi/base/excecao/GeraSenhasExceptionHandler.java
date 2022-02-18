@@ -17,6 +17,30 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class GeraSenhasExceptionHandler extends ResponseEntityExceptionHandler {
 
+  @ExceptionHandler(NaoEncontradoException.class)
+  public ResponseEntity<GeraSenhasErroDTO> handleNaoEncontradoException(Exception exception,
+      WebRequest request) {
+
+    GeraSenhasErroDTO detalhe = GeraSenhasErroDTO.builder()
+        .titulo("Ocorreu um erro ao processar a solicitação").status(HttpStatus.NOT_FOUND.value())
+        .horario(LocalDateTime.now()).erro(exception.getMessage()).build();
+
+    return new ResponseEntity<GeraSenhasErroDTO>(detalhe, new HttpHeaders(), HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(GeraSenhasException.class)
+  public ResponseEntity<GeraSenhasErroDTO> handleGeraSenhasException(Exception exception,
+      WebRequest request) {
+
+    GeraSenhasErroDTO detalhe =
+        GeraSenhasErroDTO.builder().titulo("Ocorreu um erro ao processar a solicitação")
+            .status(HttpStatus.UNPROCESSABLE_ENTITY.value()).horario(LocalDateTime.now())
+            .erro(exception.getMessage()).build();
+
+    return new ResponseEntity<GeraSenhasErroDTO>(detalhe, new HttpHeaders(),
+        HttpStatus.UNPROCESSABLE_ENTITY);
+  }
+
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<GeraSenhasErroDTO> handleValidationException(Exception exception,
       WebRequest request) {

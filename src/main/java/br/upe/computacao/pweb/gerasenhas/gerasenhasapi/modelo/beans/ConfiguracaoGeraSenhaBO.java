@@ -1,13 +1,15 @@
 package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans;
 
 import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.Range;
 import lombok.Builder;
 import lombok.Data;
 
 @Builder
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ConfiguracaoGeraSenhaBO {
 
     @Range(min = 8, max = 40, message = "O tamanho da senha deve ser entre 8 e 40 caracteres")
@@ -41,11 +43,13 @@ public class ConfiguracaoGeraSenhaBO {
         return (int) (this.tamanho / this.obterQuantidadeConfiguracoes());
     }
 
+    @JsonIgnore
     public boolean isNaoConfigurado() {
         return this.maiuscula == null && this.minuscula == null && this.especiais == null
                 && this.numeros == null && this.tamanho == null;
     }
 
+    @JsonIgnore
     public boolean isConfigurado() {
         return !this.isNaoConfigurado();
     }
