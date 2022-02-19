@@ -85,7 +85,7 @@ As seguintes ferramentas são usadas na construção da API:
 ## 🌉 Diagrama de Classes
 
 <p align="center">
-    <img alt="Diagrama de Classes" title="Diagrama de Classes" src="./assets/documentacao/Gera_Senhas_API_Diagrama_Simplificado.png" width="740" height="740" />
+    <img alt="Diagrama de Classes" title="Diagrama de Classes" src="./assets/documentacao/Gera_Senhas_API_Diagrama_Simplificado.png" width="820" height="820" />
 </p>
 
 ## 🚧 Welcome Kit
