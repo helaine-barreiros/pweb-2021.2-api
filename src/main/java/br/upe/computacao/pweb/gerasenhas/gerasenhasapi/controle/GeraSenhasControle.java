@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans.ConfiguracaoGeraSenhaBO;
 import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.beans.SenhaBO;
-import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.servico.GeraSenhaServico;
+import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.servico.IGeraSenhaServico;
 
 @RequestMapping("/api/v1/")
 @RestController
@@ -19,9 +19,9 @@ import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.servico.GeraSenhaServico;
 public class GeraSenhasControle {
 
     @Autowired
-    private GeraSenhaServico servico;
+    private IGeraSenhaServico servico;
 
-    @PostMapping("/senha")
+    @PostMapping("/gerasenha")
     public ResponseEntity<SenhaBO> gerarSenha(
             @Valid @RequestBody ConfiguracaoGeraSenhaBO configuracao) {
         return new ResponseEntity<SenhaBO>(servico.gerarSenha(configuracao), HttpStatus.CREATED);

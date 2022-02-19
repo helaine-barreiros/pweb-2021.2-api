@@ -15,7 +15,7 @@ import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.dao.IUsuarioDAO;
 import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.entidades.Usuario;
 
 @Service
-public class UsuarioServico {
+public class UsuarioServico implements IUsuarioServico {
 
     @Autowired
     private IUsuarioDAO usuarioDAO;
@@ -36,7 +36,7 @@ public class UsuarioServico {
             throw new GeraSenhasException("Ocorreu um erro ao incluir o usuário: " + erros);
         }
 
-        Optional<Usuario> existente = usuarioDAO.findByEmail(usuario.getEmail());
+        Optional<Usuario> existente = usuarioDAO.findByEmailIgnoreCase(usuario.getEmail());
         if (existente.isPresent()) {
             throw new GeraSenhasException(
                     "Ocorreu um erro ao incluir o usuário: já existe usuário cadastrado com o email "
@@ -64,13 +64,14 @@ public class UsuarioServico {
         Optional<Usuario> anterior = usuarioDAO.findById(usuario.getId());
 
         if (!anterior.isPresent()) {
-            throw new NaoEncontradoException("Usuário não encontrado");
+            throw new NaoEncontradoException(
+                    "Ocorreu um erro ao alterar o usuário: : usuário não encontrado");
         }
 
-        Usuario usuarioExistente =
-                this.usuarioDAO.findByEmailAndIdNot(usuario.getEmail(), usuario.getId());
+        Optional<Usuario> usuarioExistente =
+                this.usuarioDAO.findByEmailIgnoreCaseAndIdNot(usuario.getEmail(), usuario.getId());
 
-        if (usuarioExistente != null) {
+        if (usuarioExistente.isPresent()) {
             throw new GeraSenhasException(
                     "Ocorreu um erro ao alterar o usuário: já existe usuário cadastrado com o email "
                             + usuario.getEmail());
@@ -87,10 +88,9 @@ public class UsuarioServico {
                     "Ocorreu um erro ao excluir o usuário: informe o identificador");
         }
 
-        Optional<Usuario> usuario = usuarioDAO.findById(id);
-
-        if (!usuario.isPresent()) {
-            throw new NaoEncontradoException("Usuário não encontrado");
+        if (!usuarioDAO.existsById(id)) {
+            throw new NaoEncontradoException(
+                    "Ocorreu um erro ao excluir o usuário: usuário não encontrado");
         }
 
         usuarioDAO.deleteById(id);

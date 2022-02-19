@@ -1,0 +1,227 @@
+@startuml "Gera Senhas API Diagrama Completo Detalhado"
+title "<b>Gera Senhas API Diagrama Completo Detalhado</b>"
+skinparam classAttributeIconSize 0
+left to right direction
+
+package br.upe.computacao.pweb.gerasenhas.gerasenhasapi {
+    class GerasenhasApiApplication {
+        + public static void main(String[] args)
+    }
+
+    package base.excecao {
+        class GeraSenhasErroDTO{
+            - status : Integer
+            - titulo : String
+            - horario : LocalDateTime
+            - erro : String
+        }
+
+        class GeraSenhasException{
+            + GeraSenhasException(string : String)
+        }
+
+        class GeraSenhasExceptionHandler{
+            + handleNaoEncontradoException(exception : Exception, request : WebRequest) : ResponseEntity<GeraSenhasErroDTO>
+            + handleGeraSenhasException(exception : Exception, request : WebRequest) : ResponseEntity<GeraSenhasErroDTO>
+            + handleValidationException(exception : Exception, request : WebRequest) : ResponseEntity<GeraSenhasErroDTO>
+            # handleMethodArgumentNotValid(exception : MethodArgumentNotValidException, headers : HttpHeaders, status : HttpStatus, request : WebRequest) : ResponseEntity<Object>
+            - extrairMensagemViolacao(exception : Exception) : GeraSenhasErroDTO
+        }
+
+        class NaoEncontradoException{
+            + NaoEncontradoException(string : String)
+        }
+    }
+
+    package controle {
+        class GeraSenhasControle{
+            - servico : IGeraSenhaServico
+            + gerarSenha(configuracao : ConfiguracaoGeraSenhaBO) : ResponseEntity<SenhaBO>
+        }
+
+        class SenhaControle{
+            - servico : ISenhaServico
+            + listar(idUsuario : Long) : ResponseEntity<?>
+            + incluir(senha : SenhaTO) : ResponseEntity<SenhaTO>
+            + alterar(senha : SenhaTO) : ResponseEntity<SenhaTO>
+            + excluir(id : Long) : ResponseEntity<SenhaTO>
+            - getSenhaTO(senha : Senha) : SenhaTO
+        }
+
+        class UsuarioControle{
+            - servico : IUsuarioServico
+            + listar() : ResponseEntity<?>
+            + incluir(usuario : UsuarioTO) : ResponseEntity<UsuarioTO>
+            + alterar(usuario : UsuarioTO) : ResponseEntity<UsuarioTO>
+            + excluir(id : Long) : ResponseEntity<UsuarioTO>
+            - getUsuarioTO(usuario : Usuario) : UsuarioTO
+        }
+    }
+
+    package dao {
+        interface ISenhaDAO{
+            findByRotuloIgnoreCase(rotulo : String) : Optional<Senha>
+            findByRotuloIgnoreCaseAndIdNot(rotulo : String, id : Long) : Senha
+        }
+
+        interface IUsuarioDAO{
+            findByEmailIgnoreCaseAndIdNot(email : String, id : Long) : Optional<Usuario>
+            findByEmailIgnoreCase(email : String) : Optional<Usuario>
+        }
+    }
+
+    package modelo {
+        package beans {
+            class ConfiguracaoGeraSenhaBO{
+                - tamanho : Integer
+                - maiuscula : Boolean
+                - minuscula : Boolean
+                - numeros : Boolean
+                - especiais : Boolean
+                + obterQuantidadeConfiguracoes() : int
+                + qtdCaracteresPorToken() : int
+                + isNaoConfigurado() : boolean
+                + isConfigurado() : boolean
+            }
+
+            class SenhaBO{
+                + senha : String
+                - configuracao : ConfiguracaoGeraSenhaBO
+                - geracao : LocalDateTime
+            }
+
+        }
+        package entidades {
+            class Senha{
+                - id : Long
+                - rotulo : String
+                - senha : String
+                - dataInclusao : LocalDateTime
+                - dataUltimaAlteracao : LocalDateTime
+                - usuario : Usuario
+            }
+
+            class Usuario{
+            - id : Long
+            - nome : String
+            - email : String
+            - senhas : List<Senha>
+            - dataInclusao : LocalDateTime
+            - dataUltimaAlteracao : LocalDateTime
+            }
+        }
+        package enumeracao {
+            enum CaracterEspecialDataEnum{
+                Special_Unicode
+            }
+        }
+        package tos {
+            class SenhaTO{
+                - id : Long
+                - rotulo : String
+                - senha : String
+                - idUsuario : Long
+                - dataInclusao : LocalDateTime
+                - dataUltimaAlteracao : LocalDateTime
+                + getSenha() : Senha
+            }
+            class UsuarioTO{
+                - id : Long
+                - nome : String
+                - email : String
+                - senhas : List<SenhaTO>
+                - dataInclusao : LocalDateTime
+                - dataUltimaAlteracao : LocalDateTime
+                + getUsuario() : Usuario
+            }
+        }
+    }
+
+    package servico {
+        interface IGeraSenhaServico{
+            gerarSenha(configuracao : ConfiguracaoGeraSenhaBO) : SenhaBO
+        }
+
+        class GeraSenhaServico{
+            + gerarSenha(configuracao : ConfiguracaoGeraSenhaBO) : SenhaBO
+        }
+
+        interface ISenhaServico{
+            listar(idUsuario : Long) : List<Senha>
+            incluir(senha : Senha) : Senha
+            alterar(senha : Senha) : Senha
+            excluir(id : Long) : void
+        }
+
+        class SenhaServico{
+            - senhaDAO : ISenhaDAO
+            - usuarioDAO : IUsuarioDAO
+            - validator : Validator
+            + SenhaServico()
+            + listar(idUsuario : Long) : List<Senha>
+            + incluir(senha : Senha) : Senha
+            + alterar(senha : Senha) : Senha
+            + excluir(id : Long) : void
+            - obterViolacoes(senha : Senha) : String
+        }
+
+        interface IUsuarioServico{
+            listar() : List<Usuario>
+            incluir(usuario : Usuario) : Usuario
+            alterar(usuario : Usuario) : Usuario
+            excluir(id : Long) : void
+        }
+
+        class UsuarioServico{
+            - usuarioDAO : IUsuarioDAO
+            - validator : Validator
+            + UsuarioServico()
+            + listar() : List<Usuario>
+            + incluir(usuario : Usuario) : Usuario
+            + alterar(usuario : Usuario) : Usuario
+            + excluir(id : Long) : void
+            - obterViolacoes(usuario : Usuario) : String
+        }
+    }
+}
+
+GeraSenhasExceptionHandler -up-"manipula" GeraSenhasErroDTO
+GeraSenhasExceptionHandler -up-"trata" GeraSenhasException
+NaoEncontradoException -up-|> GeraSenhasException
+
+GeraSenhasControle -->"delega processamento" IGeraSenhaServico
+GeraSenhasControle -up->"recebe/devolve" SenhaBO
+
+SenhaControle -->"delega processamento" ISenhaServico
+SenhaControle -up->"manipula" Senha
+SenhaControle -up->"recebe/devolve" SenhaTO
+
+UsuarioControle -->"delega processamento" IUsuarioServico
+UsuarioControle -up->"manipula" Usuario
+UsuarioControle -up->"recebe/devolve" UsuarioTO
+
+SenhaServico .up.|> ISenhaServico
+SenhaServico -up->"acessa" ISenhaDAO
+SenhaServico -up->"acessa" IUsuarioDAO
+SenhaServico -->"utiliza" Validator
+ISenhaServico -up->"conhece apenas" Senha
+
+UsuarioServico .up.|> IUsuarioServico
+UsuarioServico -up->"acessa" IUsuarioDAO
+UsuarioServico -->"utiliza" Validator
+IUsuarioServico -up->"conhece apenas" Usuario
+
+GeraSenhaServico .up.|> IGeraSenhaServico
+GeraSenhaServico -->"utiliza" Validator
+GeraSenhaServico -->"utiliza" CaracterEspecialDataEnum
+IGeraSenhaServico -up->"devolve" SenhaBO
+IGeraSenhaServico -up->"recebe" ConfiguracaoGeraSenhaBO
+
+
+ISenhaDAO -up-|> CrudRepository
+ISenhaDAO -up->"conhece apenas" Senha
+
+IUsuarioDAO -up-|> CrudRepository
+IUsuarioDAO -up->"conhece apenas" Usuario
+
+@enduml

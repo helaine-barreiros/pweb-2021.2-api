@@ -1,0 +1,161 @@
+@startuml
+skinparam classAttributeIconSize 0
+class Senha{
+- id : Long
+- rotulo : String
+- senha : String
+- dataInclusao : LocalDateTime
+- dataUltimaAlteracao : LocalDateTime
+- usuario : Usuario
+}
+class GerasenhasApiApplication{
++ {static} main(args : String[]) : void
+}
+class Usuario{
+- id : Long
+- nome : String
+- email : String
+- senhas : List<Senha>
+- dataInclusao : LocalDateTime
+- dataUltimaAlteracao : LocalDateTime
+}
+class UsuarioControle{
+- servico : IUsuarioServico
++ listar() : ResponseEntity<?>
++ incluir(usuario : UsuarioTO) : ResponseEntity<UsuarioTO>
++ alterar(usuario : UsuarioTO) : ResponseEntity<UsuarioTO>
++ excluir(id : Long) : ResponseEntity<UsuarioTO>
+- getUsuarioTO(usuario : Usuario) : UsuarioTO
+}
+class GeraSenhasExceptionHandler{
++ handleNaoEncontradoException(exception : Exception, request : WebRequest) : ResponseEntity<GeraSenhasErroDTO>
++ handleGeraSenhasException(exception : Exception, request : WebRequest) : ResponseEntity<GeraSenhasErroDTO>
++ handleValidationException(exception : Exception, request : WebRequest) : ResponseEntity<GeraSenhasErroDTO>
+# handleMethodArgumentNotValid(exception : MethodArgumentNotValidException, headers : HttpHeaders, status : HttpStatus, request : WebRequest) : ResponseEntity<Object>
+- extrairMensagemViolacao(exception : Exception) : GeraSenhasErroDTO
+}
+GeraSenhasExceptionHandler --|> ResponseEntityExceptionHandler
+class GeraSenhasErroDTO{
+- status : Integer
+- titulo : String
+- horario : LocalDateTime
+- erro : String
+}
+class SenhaServico{
+- senhaDAO : ISenhaDAO
+- usuarioDAO : IUsuarioDAO
+- validator : Validator
++ SenhaServico()
++ listar(idUsuario : Long) : List<Senha>
++ incluir(senha : Senha) : Senha
++ alterar(senha : Senha) : Senha
++ excluir(id : Long) : void
+- obterViolacoes(senha : Senha) : String
+}
+SenhaServico ..|> ISenhaServico
+class UsuarioServico{
+- usuarioDAO : IUsuarioDAO
+- validator : Validator
++ UsuarioServico()
++ listar() : List<Usuario>
++ incluir(usuario : Usuario) : Usuario
++ alterar(usuario : Usuario) : Usuario
++ excluir(id : Long) : void
+- obterViolacoes(usuario : Usuario) : String
+}
+UsuarioServico ..|> IUsuarioServico
+class NaoEncontradoException{
++ NaoEncontradoException(string : String)
+}
+NaoEncontradoException --|> GeraSenhasException
+class ConfiguracaoGeraSenhaBO{
+- tamanho : Integer
+- maiuscula : Boolean
+- minuscula : Boolean
+- numeros : Boolean
+- especiais : Boolean
++ obterQuantidadeConfiguracoes() : int
++ qtdCaracteresPorToken() : int
++ isNaoConfigurado() : boolean
++ isConfigurado() : boolean
+}
+class GeraSenhasControle{
+- servico : IGeraSenhaServico
++ gerarSenha(configuracao : ConfiguracaoGeraSenhaBO) : ResponseEntity<SenhaBO>
+}
+class GeraSenhasException{
++ GeraSenhasException(string : String)
+}
+GeraSenhasException --|> RuntimeException
+class SenhaControle{
+- servico : ISenhaServico
++ listar(idUsuario : Long) : ResponseEntity<?>
++ incluir(senha : SenhaTO) : ResponseEntity<SenhaTO>
++ alterar(senha : SenhaTO) : ResponseEntity<SenhaTO>
++ excluir(id : Long) : ResponseEntity<SenhaTO>
+- getSenhaTO(senha : Senha) : SenhaTO
+}
+class SenhaBO{
++ senha : String
+- configuracao : ConfiguracaoGeraSenhaBO
+- geracao : LocalDateTime
+}
+class GeraSenhaServico{
++ gerarSenha(configuracao : ConfiguracaoGeraSenhaBO) : SenhaBO
+}
+GeraSenhaServico ..|> IGeraSenhaServico
+class UsuarioTO{
+- id : Long
+- nome : String
+- email : String
+- senhas : List<SenhaTO>
+- dataInclusao : LocalDateTime
+- dataUltimaAlteracao : LocalDateTime
++ getUsuario() : Usuario
+}
+class SenhaTO{
+- id : Long
+- rotulo : String
+- senha : String
+- idUsuario : Long
+- dataInclusao : LocalDateTime
+- dataUltimaAlteracao : LocalDateTime
++ getSenha() : Senha
+}
+Senha--"- usuario" Usuario
+UsuarioControle--"- servico" IUsuarioServico
+SenhaServico--"- senhaDAO" ISenhaDAO
+SenhaServico--"- usuarioDAO" IUsuarioDAO
+UsuarioServico--"- usuarioDAO" IUsuarioDAO
+GeraSenhasControle--"- servico" IGeraSenhaServico
+SenhaControle--"- servico" ISenhaServico
+SenhaBO--"- configuracao" ConfiguracaoGeraSenhaBO
+interface ISenhaDAO{
+findByRotuloIgnoreCase(rotulo : String) : Optional<Senha>
+findByRotuloIgnoreCaseAndIdNot(rotulo : String, id : Long) : Senha
+}
+ISenhaDAO --|> CrudRepository
+interface ISenhaServico{
+listar(idUsuario : Long) : List<Senha>
+incluir(senha : Senha) : Senha
+alterar(senha : Senha) : Senha
+excluir(id : Long) : void
+}
+interface IGeraSenhaServico{
+gerarSenha(configuracao : ConfiguracaoGeraSenhaBO) : SenhaBO
+}
+interface IUsuarioDAO{
+findByEmailIgnoreCaseAndIdNot(email : String, id : Long) : Optional<Usuario>
+findByEmailIgnoreCase(email : String) : Optional<Usuario>
+}
+IUsuarioDAO --|> CrudRepository
+interface IUsuarioServico{
+listar() : List<Usuario>
+incluir(usuario : Usuario) : Usuario
+alterar(usuario : Usuario) : Usuario
+excluir(id : Long) : void
+}
+enum CaracterEspecialDataEnum{
+Special_Unicode
+}
+@enduml

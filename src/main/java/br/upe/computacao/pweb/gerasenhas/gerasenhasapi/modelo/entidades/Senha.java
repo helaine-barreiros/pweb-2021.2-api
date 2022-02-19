@@ -1,15 +1,14 @@
 package br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.entidades;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.Email;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,22 +20,23 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class Usuario {
+public class Senha {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotEmpty(message = "Informe o nome do usuário")
-    private String nome;
+    @NotEmpty(message = "Informe o rotulo da senha")
+    private String rotulo;
 
-    @NotEmpty(message = "Informe o email do usuário")
-    @Email(message = "Infome o email em um formato válido")
-    private String email;
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Senha> senhas;
+    @NotEmpty(message = "Informe a senha")
+    private String senha;
 
     private LocalDateTime dataInclusao;
     private LocalDateTime dataUltimaAlteracao;
+
+    @NotNull(message = "Informe o usuario associado a senha")
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
 }

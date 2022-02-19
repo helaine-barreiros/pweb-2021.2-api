@@ -8,7 +8,7 @@ import br.upe.computacao.pweb.gerasenhas.gerasenhasapi.modelo.entidades.Usuario;
 @Repository
 public interface IUsuarioDAO extends CrudRepository<Usuario, Long> {
 
-    Usuario findByEmailAndIdNot(String email, Long id);
+    Optional<Usuario> findByEmailIgnoreCaseAndIdNot(String email, Long id);
 
-    Optional<Usuario> findByEmail(String email);
+    Optional<Usuario> findByEmailIgnoreCase(String email);
 }
