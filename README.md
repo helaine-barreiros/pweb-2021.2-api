@@ -35,7 +35,7 @@ Após a análise de algumas opções existentes, definimos a seguinte lista de r
 - <b>[RF06]</b> - Caracteres semelhantes - define a possibilidade da senha gerada conter repetição de caracteres (Desejável)
 - <b>[RF07]</b> - Copiar - possibilita a cópia da senha para a área de clipboard (Importante)
 - <b>[RF08]</b> - Compartilhamento - permite ompartilhar a senha gerada via whatsapp ou email (Desejável)
-- <b>[RF09]</b> - Armazenamento - oermite rmazenar a senha (Importante)
+- <b>[RF09]</b> - Armazenamento - permite armazenar a senha (Importante)
 - <b>[RF10]</b> - Categorização de senhas - permite organizar as senhas armazenadas aplicando labels (Desejável)
 - <b>[RF11]</b> - Criptografia - permite que a senha armazenada seja criptografada (Desejável)
 
@@ -80,6 +80,12 @@ As seguintes ferramentas são usadas na construção da API:
 
 <p align="center">
     <img alt="Arquitetura" title="Arquitetura de referência" src="./assets/arquitetura-gera-senha.png" width="620" height="450" />
+</p>
+
+## 🌉 Diagrama de Classes
+
+<p align="center">
+    <img alt="Diagrama de Classes" title="Diagrama de Classes" src="./assets/Gera_Senhas_API_Diagrama_Simplificado.png" width="620" height="450" />
 </p>
 
 ## 🚧 Welcome Kit
